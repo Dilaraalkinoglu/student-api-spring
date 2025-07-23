@@ -10,6 +10,8 @@ import com.dilaraalk.dto.DtoStudent;
 import com.dilaraalk.dto.DtoStudentIU;
 import com.dilaraalk.services.IStudentService;
 
+import jakarta.validation.Valid;
+
 @RestController  // Bu sınıf bir REST Controller'dır, HTTP isteklerine yanıt verir
 @RequestMapping("/rest/api/student")  // Tüm endpoint'ler bu path üzerinden başlar
 public class StudentControllerImpl implements IStudentController {
@@ -21,7 +23,7 @@ public class StudentControllerImpl implements IStudentController {
     // Yeni öğrenci kaydı
     @PostMapping(path = "/save")
     @Override
-    public DtoStudent saveStudent(@RequestBody DtoStudentIU dtoStudentIU) {
+    public DtoStudent saveStudent(@RequestBody @Valid DtoStudentIU dtoStudentIU) {
         return studentService.saveStudent(dtoStudentIU);
     }
 
