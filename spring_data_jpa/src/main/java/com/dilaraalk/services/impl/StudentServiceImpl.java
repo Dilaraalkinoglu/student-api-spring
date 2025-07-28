@@ -1,6 +1,7 @@
 package com.dilaraalk.services.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,8 +9,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.dilaraalk.dto.DtoCourse;
 import com.dilaraalk.dto.DtoStudent;
 import com.dilaraalk.dto.DtoStudentIU;
+import com.dilaraalk.entites.Course;
 import com.dilaraalk.entites.Student;
 import com.dilaraalk.repository.StudentRepository;
 import com.dilaraalk.services.IStudentService;
@@ -57,15 +60,24 @@ public class StudentServiceImpl implements IStudentService {
     // ID ile öğrenci getir
     @Override
     public DtoStudent getStudentById(Integer id) {
-        DtoStudent dto = new DtoStudent();
-        Optional<Student> optional = studentRepository.findStudentById(id);
-
-        if (optional.isPresent()) {
-            Student dbStudent = optional.get();
-            BeanUtils.copyProperties(dbStudent, dto);
-        }
-
-        return dto;
+        DtoStudent dtoStudent = new DtoStudent();
+        Optional<Student> optional = studentRepository.findById(id);
+        if (optional.isEmpty()) {
+			return null;
+			
+		}
+        Student dbStudent = optional.get();
+        BeanUtils.copyProperties(dbStudent, dtoStudent);
+        
+        if (dbStudent.getCourses()!=null && !dbStudent.getCourses().isEmpty()) {
+			for (Course course : dbStudent.getCourses()) {
+				DtoCourse dtoCourse = new DtoCourse();
+				BeanUtils.copyProperties(course, dtoCourse);
+				
+				dtoStudent.getCourses().add(dtoCourse);
+			}
+		}
+    	return dtoStudent;
     }
 
     // Öğrenciyi sil

@@ -1,14 +1,19 @@
 package com.dilaraalk.entites;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat; // Tarih formatını JSON cevabında düzenlemek için
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -33,11 +38,7 @@ public class Student {
 
     // Bu alan primary key (birincil anahtar) olarak işaretlendi
     @Id
-
-    // Veritabanı sütun adı "id" olacak
     @Column(name = "id")
-
-    // ID otomatik olarak veritabanı tarafından oluşturulacak (AUTO_INCREMENT gibi)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -53,4 +54,18 @@ public class Student {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(name = "birth_of_date", nullable = false)
     private Date birthOfDate;
+    
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "student_course",
+        joinColumns = @JoinColumn(name = "student_id"),
+        inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
+    private List<Course> courses;
+
+    
+    
+    
+    
+    
 }
